@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/asm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/beanbowl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/colt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/geotools_repast.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/ibis.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jakarta-poi.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jep-2.24.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jgap.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jh.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jmf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/jode-1.1.2-pre1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/joone.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/JTS.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/OpenForecast-0.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/openmap.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/plot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/ProActive.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/trove.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/lib/violinstrings-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/Repast-3.1/RepastJ/repast.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/SAJaS.jar"/>
+	<classpathentry kind="lib" path="C:/Users/marta/Desktop/jade.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
