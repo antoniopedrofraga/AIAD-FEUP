@@ -285,14 +285,14 @@ public class LiftAgent extends Agent implements Drawable{
 							c = 1000 - LiftTasks.size() + maxWeight;
 						else if(requestOriginFloor > getLastTask().getDestFloor() && direction.equalsName("DOWN") || requestOriginFloor < getLastTask().getDestFloor() && direction.equalsName("UP")){ // em direcao ao piso de origem
 							if(direction.equalsName(requestDirection)){ // mesma direcao do pedido
-								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() + maxWeight;
+								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight;
 							}
 							else{
-								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() + maxWeight - 2;
+								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight + 2;
 							}
 						}
 						else{
-							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() + maxWeight - 10;
+							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight + 10;
 						}
 
 					}
@@ -304,7 +304,7 @@ public class LiftAgent extends Agent implements Drawable{
 								c = 1000 - Math.abs(requestOriginFloor-y) + maxWeight;
 							}
 							else{
-								c = 1000 - Math.abs(requestOriginFloor-y) + maxWeight - 2;
+								c = 1000 - Math.abs(requestOriginFloor-y) + maxWeight + 2;
 							}
 						}
 						else{
@@ -318,7 +318,7 @@ public class LiftAgent extends Agent implements Drawable{
 						if(requestOriginFloor == getLastTask().getDestFloor())
 							c = 1000;
 						else{
-							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor());
+							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size();
 						}
 
 					}

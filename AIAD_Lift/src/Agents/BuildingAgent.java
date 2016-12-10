@@ -60,11 +60,11 @@ public class BuildingAgent extends Agent{
 	public void generateCall(int nrFloors){
 		Statistics.addCall();
 		int nrPeople = ThreadLocalRandom.current().nextInt(1, buildingMaxWeight + 1);
-
+		String direction = null;
 		Random generator = new Random();		
 		int originrandFloor;
 
-		int rand = generator.nextInt(nrFloors+20);
+		int rand = generator.nextInt(nrFloors+10);
 		if(rand >= nrFloors)
 			originrandFloor = nrFloors-1;
 		else
@@ -77,17 +77,22 @@ public class BuildingAgent extends Agent{
 
 		if(originrandFloor < destrandFloor){
 			addBehaviour(new RequestPerformer(originrandFloor, Direction.UP, destrandFloor, nrPeople));
+			direction = "UP";
 
 		}
 		else{
 			addBehaviour(new RequestPerformer(originrandFloor, Direction.DOWN, destrandFloor, nrPeople));	
+			direction = "DOWN";
 		}
 	
 		int o = (nrFloors-1) - originrandFloor;
 		int d = (nrFloors-1) - destrandFloor;
 		building.callLiftSpace(originrandFloor, destrandFloor);
 		
-		System.out.println("NEW CALL: Origin: "+ o + " Dest: " + d + "    -    " + nrPeople + " people.\n");
+		if(algorithm == 3)
+		System.out.println("NEW CALL: Origin: "+ o + " Destination: " + d + "    -    " + nrPeople + " people.\n");
+		else
+			System.out.println("NEW CALL: Origin: "+ o + " Direction: " + direction + "    -    " + nrPeople + " people.\n");
 		
 	}
 

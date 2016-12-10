@@ -35,7 +35,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 	private static final int NRLIFTS = 4;
 	private static final int NRFLOORS = 15;
 	private static final int GENCALLSFREQ = 500;
-	private static final int LIFTSPEED = 30;
+	private static final int LIFTSPEED = 20;
 	private static final int BMAXWEIGHT = 5;
 	private static final int CRITERIAG = 1;
 
@@ -62,8 +62,6 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 	public void setup(){
 		//System.out.println("Running setup");
-		Statistics.setProgramStartTime(System.nanoTime());
-		
 		System.out.println("Please choose a group of criteria:" + "\n\n" 
 				+ "1. -Lift proximity to the call; \n   -Direction in which the lift is going; \n   -Number of tasks per lift; \n   -Lift capacity.\n\n"
 				+ "2. -Lift proximity to the call. \n\n"
@@ -83,17 +81,21 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 		registerDisplaySurface("Lift Model Window 1", displaySurf);
 		
-		
-	this.addSimEventListener(new SimEventListener() {
-			
+		long start = System.currentTimeMillis();
+		Statistics.setProgramStartTime(start);
+
+		this.addSimEventListener(new SimEventListener() {
+
 			@Override
 			public void simEventPerformed(SimEvent arg0) {
 				if(arg0.getId()==SimEvent.STOP_EVENT){
-					Statistics.setProgramEndTime(System.nanoTime());
+					long end = System.currentTimeMillis();
+					Statistics.setProgramEndTime(end);
 					Statistics.calculateStatistics();
 					Statistics.printStatistics();
 				}
-				
+
+
 			}
 		});
 	}
@@ -111,7 +113,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 				maxWeightinLift = liftList.get(i).getMaxWeight();
 		}
 		buildingAgent.setBuildingMaxWeight(maxWeightinLift);
-	
+
 		displaySurf.display();	
 	}
 
@@ -121,12 +123,12 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 		class tryToStop extends BasicAction{
 			public void execute(){
-				if(getSchedule().getCurrentTime() == 1000)
+				if(getSchedule().getCurrentTime() == 100000)
 					stopSimulation();
 			}
 		}
-		
-		
+
+
 		class callLift extends BasicAction {
 			public void execute() {
 				buildingAgent.generateCall(nrFloors);
@@ -174,7 +176,9 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 		ColorMap map = new ColorMap();
 		map.mapColor(0, Color.white);
 		map.mapColor(1, Color.green);
+		map.mapColor(5, Color.green);
 		map.mapColor(2, Color.red);
+		map.mapColor(4, Color.red);
 
 		Value2DDisplay displayBuilding = new Value2DDisplay(buildingSpace.getCurrentDoorSpace(), map);
 		Object2DDisplay displayDoors = new Object2DDisplay(buildingSpace.getDoors());
@@ -251,7 +255,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		buildingAgent.setAlgorithm(criteriaGroup);
 	}
 	/*
@@ -259,8 +263,8 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 	public void stopSimulation() {
 		System.out.println("Parei a simulação");
 	}*/
-	
-	
+
+
 	@Override
 	protected void launchJADE() {
 		Runtime rt = Runtime.instance();

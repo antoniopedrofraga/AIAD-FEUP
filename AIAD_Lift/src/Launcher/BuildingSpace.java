@@ -41,7 +41,7 @@ public class BuildingSpace {
 		liftSpace.putObjectAt(agent.getX(), agent.getY(),agent);
 		return true;
 	}
-	
+
 	public Object2DGrid getDoors(){
 		return doors;
 	}
@@ -54,23 +54,28 @@ public class BuildingSpace {
 	public void addBuildingSpace(BuildingAgent agent){
 		agent.setBuilding(this);
 	}
-	
+
 	public void addBuildingSpaceL(LiftAgent agent){
 		agent.setBuilding(this);
 	}
 
 	public void callLiftSpace(int originfloor, int destfloor){
-		//System.out.println("COMEÇA :" + startTimeCall);
 		int floorWidth = doorSpace.getSizeX();
-		
+
 		if(originfloor > destfloor){
 			for(int i = 0; i < floorWidth; i++){
-				doorSpace.putObjectAt(i, originfloor, new Integer(1));
+				if(doorSpace.getObjectAt(i, originfloor).equals(0))
+					doorSpace.putObjectAt(i, originfloor, new Integer(1));
+				else if(doorSpace.getObjectAt(i, originfloor).equals(1))
+					doorSpace.putObjectAt(i, originfloor, new Integer(5));
 			}
 		}
 		else{
 			for(int i = 0; i < floorWidth; i++){
-				doorSpace.putObjectAt(i, originfloor, new Integer(2));
+				if(doorSpace.getObjectAt(i, originfloor).equals(0))
+					doorSpace.putObjectAt(i, originfloor, new Integer(2));
+				else if(doorSpace.getObjectAt(i, originfloor).equals(2))
+					doorSpace.putObjectAt(i, originfloor, new Integer(4));
 			}
 		}
 	}
@@ -79,7 +84,12 @@ public class BuildingSpace {
 		int floorWidth = doorSpace.getSizeX();
 
 		for(int i = 0; i < floorWidth; i++){
-			doorSpace.putObjectAt(i, originfloor, new Integer(0));
+			if(doorSpace.getObjectAt(i, originfloor).equals(4))
+				doorSpace.putObjectAt(i, originfloor, new Integer(2));
+			else if(doorSpace.getObjectAt(i, originfloor).equals(5))
+				doorSpace.putObjectAt(i, originfloor, new Integer(1));
+			else
+				doorSpace.putObjectAt(i, originfloor, new Integer(0));
 		}
 
 	}
