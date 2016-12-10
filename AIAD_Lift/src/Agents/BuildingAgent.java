@@ -2,10 +2,7 @@ package Agents;
 
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
-import uchicago.src.sim.engine.Schedule;
-import uchicago.src.sim.engine.TickCounter;
 import jade.lang.acl.ACLMessage;
-import jode.jvm.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,6 +12,7 @@ import Launcher.BuildingSpace;
 import jade.core.AID;
 import Utilities.Direction;
 import Utilities.Statistics;
+
 
 public class BuildingAgent extends Agent{
 
@@ -60,6 +58,7 @@ public class BuildingAgent extends Agent{
 
 
 	public void generateCall(int nrFloors){
+		Statistics.addCall();
 		int nrPeople = ThreadLocalRandom.current().nextInt(1, buildingMaxWeight + 1);
 
 		Random generator = new Random();		
@@ -87,6 +86,7 @@ public class BuildingAgent extends Agent{
 		int o = (nrFloors-1) - originrandFloor;
 		int d = (nrFloors-1) - destrandFloor;
 		building.callLiftSpace(originrandFloor, destrandFloor);
+		
 		System.out.println("NEW CALL: Origin: "+ o + " Dest: " + d + "    -    " + nrPeople + " people.\n");
 		
 	}

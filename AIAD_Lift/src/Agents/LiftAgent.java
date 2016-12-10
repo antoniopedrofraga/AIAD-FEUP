@@ -15,8 +15,6 @@ import Utilities.Task;
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
-
-
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
 
@@ -33,6 +31,8 @@ public class LiftAgent extends Agent implements Drawable{
 	private BuildingSpace building;
 	private BufferedImage image;
 	private int algorithm;
+	private long callStartTime;
+	private long callEndTime;
 
 	public LiftAgent(int bmaxWeight, int nrfloors, int algorithm){
 		this.algorithm = algorithm;
@@ -44,6 +44,9 @@ public class LiftAgent extends Agent implements Drawable{
 		direction = Direction.STOP;
 		this.nrfloors = nrfloors;
 		this.LiftTasks = new ArrayList<Task>();
+		this.setCallStartTime(0);
+		this.setCallEndTime(0);
+		
 		//boolean onBoard = true;
 
 		try {
@@ -114,16 +117,15 @@ public class LiftAgent extends Agent implements Drawable{
 				onBoard = true;
 				goToDestiny();
 				building.removeCallSpace(o);
-				
 			}
 		}
 	}
 
 	public void goToDestiny(){
-		//System.out.println("LOL");
+		
 		int o = LiftTasks.get(0).getOriginFloor();
 		int d = LiftTasks.get(0).getDestFloor();
-
+		
 		if(d < getY() && onBoard){
 			//building.removeCallSpace(o);
 			goesUp();
@@ -138,8 +140,12 @@ public class LiftAgent extends Agent implements Drawable{
 			int o1 = (nrfloors-1) - o;
 			int d1 = (nrfloors-1) - d;
 			System.out.println("Lift " + ID +" went from " + o1 + " to " + d1+ "\n");
-			Statistics.setCallEndTime(System.nanoTime());
-			Statistics.calculateResponseTime();
+			
+			this.setCallEndTime(System.nanoTime());
+			
+			long time = this.callEndTime - this.callStartTime;
+			Statistics.addTimeToLift(ID, time);
+			Statistics.addCallToLift(ID);
 		}
 		//building.removeCallSpace(o);
 	}
@@ -160,15 +166,31 @@ public class LiftAgent extends Agent implements Drawable{
 		direction = Direction.DOWN;
 
 	}
-
+/*
 	public void stopLift(){
 		direction = Direction.STOP;
 	}
 
 
-
+*/
 	public void setLiftState(Direction dir){
 		this.direction = dir;
+	}
+
+	public long getCallStartTime() {
+		return callStartTime;
+	}
+
+	public void setCallStartTime(long callStartTime) {
+		this.callStartTime = callStartTime;
+	}
+
+	public long getCallEndTime() {
+		return callEndTime;
+	}
+
+	public void setCallEndTime(long callEndTime) {
+		this.callEndTime = callEndTime;
 	}
 
 	public class MsgListener extends CyclicBehaviour{
@@ -199,6 +221,8 @@ public class LiftAgent extends Agent implements Drawable{
 					ACLMessage reply = message.createReply();
 					reply.setPerformative(ACLMessage.PROPOSE);
 					reply.setContent(cost);
+				
+					
 					//System.out.println("Sou o elevador " + getAID().getName() + " e o meu custo é de " + cost);
 					myAgent.send(reply);
 					step = 1;
@@ -218,7 +242,10 @@ public class LiftAgent extends Agent implements Drawable{
 						int destY = Integer.parseInt(dFloor);
 						//int destFloor = nrfloors - destY;
 						addLiftTasks(requestOriginFloor, destY);
-
+						
+						setCallStartTime(System.nanoTime());
+						
+						
 						//System.out.println("Elevador " + ID + " aceite!");
 					}
 					else{

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Agents.BuildingAgent;
 import Agents.LiftAgent;
 import Utilities.Door;
+import Utilities.Statistics;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -15,7 +16,10 @@ import sajas.wrapper.ContainerController;
 
 import uchicago.src.sim.engine.BasicAction;
 import uchicago.src.sim.engine.Schedule;
+import uchicago.src.sim.engine.SimEvent;
+import uchicago.src.sim.engine.SimEventListener;
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.engine.TickCounter;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.ColorMap;
 import uchicago.src.sim.gui.Value2DDisplay;
@@ -25,7 +29,7 @@ import uchicago.src.sim.gui.Object2DDisplay;
 
 
 
-public class LiftModel extends Repast3Launcher {
+public class LiftModel extends Repast3Launcher implements TickCounter {
 
 	//Default Values
 	private static final int NRLIFTS = 4;
@@ -58,6 +62,9 @@ public class LiftModel extends Repast3Launcher {
 
 	public void setup(){
 		//System.out.println("Running setup");
+		new Statistics(nrLifts);
+		Statistics.setProgramStartTime(System.nanoTime());
+		
 		System.out.println("Please choose a group of criteria:" + "\n\n" 
 				+ "1. -Lift proximity to the call; \n   -Direction in which the lift is going; \n   -Number of tasks per lift; \n   -Lift capacity.\n\n"
 				+ "2. -Lift proximity to the call. \n\n"
@@ -76,9 +83,20 @@ public class LiftModel extends Repast3Launcher {
 		displaySurf = new DisplaySurface(this, "Lift Model Window 1");
 
 		registerDisplaySurface("Lift Model Window 1", displaySurf);
-
-
-
+		
+		
+	this.addSimEventListener(new SimEventListener() {
+			
+			@Override
+			public void simEventPerformed(SimEvent arg0) {
+				if(arg0.getId()==SimEvent.STOP_EVENT){
+					Statistics.setProgramEndTime(System.nanoTime());
+					Statistics.calculateStatistics();
+					Statistics.printStatistics();
+				}
+				
+			}
+		});
 	}
 
 
@@ -102,10 +120,17 @@ public class LiftModel extends Repast3Launcher {
 	private void buildSchedule() {
 		System.out.println("Running buildSchedule");
 
-
+		class tryToStop extends BasicAction{
+			public void execute(){
+				if(getSchedule().getCurrentTime() == 100000)
+					stopSimulation();
+			}
+		}
+		
+		
 		class callLift extends BasicAction {
 			public void execute() {
-				buildingAgent.generateCall(nrFloors);					
+				buildingAgent.generateCall(nrFloors);
 			}
 		}
 
@@ -113,7 +138,7 @@ public class LiftModel extends Repast3Launcher {
 			public void execute(){
 				for(int i = 0; i < liftList.size(); i++){
 					LiftAgent lift = liftList.get(i);
-					lift.goToOrigin();					
+					lift.goToOrigin();
 				}
 			}
 		}
@@ -121,6 +146,7 @@ public class LiftModel extends Repast3Launcher {
 		getSchedule().scheduleActionAtInterval(1, displaySurf, "updateDisplay", Schedule.LAST);
 		getSchedule().scheduleActionAtInterval(callFrequency, new callLift());
 		getSchedule().scheduleActionAtInterval(liftspeed, new doTask());
+		getSchedule().scheduleActionAtInterval(1, new tryToStop());
 	}
 
 	private void buildModel() {
@@ -158,9 +184,9 @@ public class LiftModel extends Repast3Launcher {
 		displayDoors.setObjectList(doorList);
 
 
-		displaySurf.addDisplayable(displayBuilding, "Building");
-		displaySurf.addDisplayable(displayDoors, "Doors");
-		displaySurf.addDisplayable(displayAgents, "Lifts");
+		displaySurf.addDisplayableProbeable(displayBuilding, "Building");
+		displaySurf.addDisplayableProbeable(displayDoors, "Doors");
+		displaySurf.addDisplayableProbeable(displayAgents, "Lifts");
 	}
 
 
@@ -229,7 +255,13 @@ public class LiftModel extends Repast3Launcher {
 		
 		buildingAgent.setAlgorithm(criteriaGroup);
 	}
-
+	/*
+	@Override
+	public void stopSimulation() {
+		System.out.println("Parei a simulação");
+	}*/
+	
+	
 	@Override
 	protected void launchJADE() {
 		Runtime rt = Runtime.instance();
@@ -261,6 +293,12 @@ public class LiftModel extends Repast3Launcher {
 
 	public void setCriteriaGroup(int algorithm) {
 		this.criteriaGroup = algorithm;
+	}
+
+	@Override
+	public double getCurrentTime() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

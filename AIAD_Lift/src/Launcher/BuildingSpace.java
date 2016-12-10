@@ -60,7 +60,6 @@ public class BuildingSpace {
 	}
 
 	public void callLiftSpace(int originfloor, int destfloor){
-		startTimeCall = System.nanoTime();
 		//System.out.println("COMEÇA :" + startTimeCall);
 		int floorWidth = doorSpace.getSizeX();
 		
@@ -82,9 +81,6 @@ public class BuildingSpace {
 		for(int i = 0; i < floorWidth; i++){
 			doorSpace.putObjectAt(i, originfloor, new Integer(0));
 		}
-		endTimeCall = System.nanoTime();
-		//System.out.println("ACABA :" + endTimeCall);
-		timeToRespond = startTimeCall - endTimeCall;
-		//System.out.println("TEMPO: " + timeToRespond);
+
 	}
 }

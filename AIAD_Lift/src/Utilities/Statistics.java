@@ -1,46 +1,123 @@
 package Utilities;
 
-import java.util.concurrent.TimeUnit;
-
-import uchicago.src.sim.engine.TickCounter;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Statistics {
-	private static double callStartTime = 0; 
-	private static double callEndTime = 0;
-	private static double callResponseTime = 0;
-	private static double callResponseTimeMil = 0;
+
+	private static double programEndTime;
+	private static double programStartTime;
+	private static double programTime;
+	private static int callsAnswered;	
+	private static int nrLifts;
+	private static ArrayList<Integer> callsPerLift;
+	private static ArrayList<Double> timePerLift;
+	private static ArrayList<Double> waitTimePerLift;
 	
-	
-	public static double calculateResponseTime(){
-		callResponseTimeMil = callEndTime - callStartTime;
-	
+	public Statistics(int nLifts){
+		programEndTime = 0;
+		programStartTime = 0;
+		programTime = 0;
+		nrLifts = nLifts;
+		callsPerLift = new ArrayList<Integer>(Collections.nCopies(nrLifts, 0));
+		timePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
+		waitTimePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
+	}
+
+	public static double calculateStatistics(){
+		double time = programEndTime - programStartTime; 
 		
-		System.out.println("Start: " + callStartTime);
-		System.out.println("End: " + callEndTime);
-		System.out.println("Time1: " + callResponseTimeMil);
-		System.out.println("Time: " + callResponseTime);
+		programTime  = (double) (time / 1000000000);
+		return programTime;
+	}
+	
+	public static void addCall(){
+		callsAnswered++;
+	}
+	
+	public static void addCallToLift(int ID){
+		int previousCalls = callsPerLift.get(ID-1);
+		callsPerLift.set(ID-1, previousCalls+1);
+	}
+	
+	public static void addTimeToLift(int ID, double time){		
+		double timeSec = (double) (time / 1000000000);		
+		double previousTimes = timePerLift.get(ID-1);		
+		System.out.println("Previous: " + previousTimes);
+		timePerLift.set(ID-1, (previousTimes + timeSec));
 		
-		return callResponseTime;
+		
 	}
 	
-	public double getCallStartTime() {
-		return callStartTime;
-	}
-	public static void setCallStartTime(double StartTime) {
-		callStartTime = StartTime;
-	}
-	public double getCallEndTime() {
-		return callEndTime;
-	}
-	public static void setCallEndTime(double EndTime) {
-		callEndTime = EndTime;
-	}
-	public double getCallResponseTime() {
-		return callResponseTime;
-	}
-	public void setCallResponseTime(double callResponseTime) {
-		this.callResponseTime = callResponseTime;
+	public static ArrayList<Double> calcTimePerLift(ArrayList<Integer> calls, ArrayList<Double> times){
+		ArrayList<Double> calcArray = new ArrayList<Double>();
+		
+		for(int i = 0; i < times.size(); i++){
+				calcArray.add(times.get(i)/calls.get(i));
+		}
+		
+		return calcArray;
 	}
 	
+	
+	public static void printStatistics(){
+		System.out.println("-----STATISTICS-----");
+		System.out.println("TOTAL TIME : " + programTime);
+		System.out.println("TOTAL CALLS ANSWERED: " + callsAnswered);
+		System.out.println("MEDIUM WAITING TIME: " + programTime/callsAnswered + "\n");
+		System.out.println("CALLS PER LIFT: " + callsPerLift);
+		System.out.println("TIME PER LIFT: " + timePerLift);
+		waitTimePerLift = calcTimePerLift(callsPerLift, timePerLift);
+		System.out.println("MEDIUM WAITING TIME PER LIFT: " + waitTimePerLift);
+		System.out.println("------------------------");
+	}
+
+	public static double getProgramEndTime() {
+		return programEndTime;
+	}
+
+	public static void setProgramEndTime(double programEndTime) {
+		Statistics.programEndTime = programEndTime;
+	}
+
+	public static double getProgramStartTime() {
+		return programStartTime;
+	}
+
+	public static void setProgramStartTime(double programStartTime) {
+		Statistics.programStartTime = programStartTime;
+	}
+
+	public static double getProgramTime() {
+		return programTime;
+	}
+
+	public static void setProgramTime(double programTime) {
+		Statistics.programTime = programTime;
+	}
+
+	public static int getCallsAnswered() {
+		return callsAnswered;
+	}
+
+	public static void setCallsAnswered(int callsAnswered) {
+		Statistics.callsAnswered = callsAnswered;
+	}
+
+	public static int getNrLifts() {
+		return nrLifts;
+	}
+
+	public static void setNrLifts(int nrLifts) {
+		Statistics.nrLifts = nrLifts;
+	}
+
+	public static ArrayList<Double> getTimePerLift() {
+		return timePerLift;
+	}
+
+	public static void setTimePerLift(ArrayList<Double> timePerLift) {
+		Statistics.timePerLift = timePerLift;
+	}
 	
 }
