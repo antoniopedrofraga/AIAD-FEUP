@@ -62,7 +62,6 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 	public void setup(){
 		//System.out.println("Running setup");
-		new Statistics(nrLifts);
 		Statistics.setProgramStartTime(System.nanoTime());
 		
 		System.out.println("Please choose a group of criteria:" + "\n\n" 
@@ -105,7 +104,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 		buildModel();
 		buildSchedule();
 		buildDisplay();
-
+		new Statistics(nrLifts);
 		int maxWeightinLift = 0;
 		for(int i = 0; i < liftList.size(); i++){
 			if(liftList.get(i).getMaxWeight() > maxWeightinLift)

@@ -42,6 +42,9 @@ public class Statistics {
 	
 	public static void addTimeToLift(int ID, double time){		
 		double timeSec = (double) (time / 1000000000);		
+		System.out.println("NR LIFTS: " + nrLifts);
+		System.out.println("ID " + ID);
+		System.out.println("TIMEPERLIFT: " + timePerLift.size());
 		double previousTimes = timePerLift.get(ID-1);		
 	
 		timePerLift.set(ID-1, (previousTimes + timeSec));
