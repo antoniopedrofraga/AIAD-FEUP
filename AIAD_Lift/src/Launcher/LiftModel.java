@@ -122,7 +122,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 		class tryToStop extends BasicAction{
 			public void execute(){
-				if(getSchedule().getCurrentTime() == 100000)
+				if(getSchedule().getCurrentTime() == 1000)
 					stopSimulation();
 			}
 		}

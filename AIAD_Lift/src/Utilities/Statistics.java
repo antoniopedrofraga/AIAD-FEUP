@@ -43,7 +43,7 @@ public class Statistics {
 	public static void addTimeToLift(int ID, double time){		
 		double timeSec = (double) (time / 1000000000);		
 		double previousTimes = timePerLift.get(ID-1);		
-		System.out.println("Previous: " + previousTimes);
+	
 		timePerLift.set(ID-1, (previousTimes + timeSec));
 		
 		
@@ -59,16 +59,28 @@ public class Statistics {
 		return calcArray;
 	}
 	
+	public static double calcMediumWaitTime(ArrayList<Double> times){
+		double mediumWaitTime, time = 0;
+		
+		for(int i = 0; i < times.size(); i++){
+				time +=  times.get(i);
+		}
+		mediumWaitTime = time/times.size();
+		
+		return mediumWaitTime;
+	}
+	
 	
 	public static void printStatistics(){
 		System.out.println("-----STATISTICS-----");
 		System.out.println("TOTAL TIME : " + programTime);
-		System.out.println("TOTAL CALLS ANSWERED: " + callsAnswered);
-		System.out.println("MEDIUM WAITING TIME: " + programTime/callsAnswered + "\n");
+		System.out.println("TOTAL CALLS ANSWERED: " + callsAnswered + "\n");
 		System.out.println("CALLS PER LIFT: " + callsPerLift);
 		System.out.println("TIME PER LIFT: " + timePerLift);
 		waitTimePerLift = calcTimePerLift(callsPerLift, timePerLift);
+		double mediumWaitTime = calcMediumWaitTime(waitTimePerLift);
 		System.out.println("MEDIUM WAITING TIME PER LIFT: " + waitTimePerLift);
+		System.out.println("MEDIUM WAITING TIME OF BUILDING: " + mediumWaitTime + "\n");
 		System.out.println("------------------------");
 	}
 
