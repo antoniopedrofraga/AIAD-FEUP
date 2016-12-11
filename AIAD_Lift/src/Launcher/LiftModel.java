@@ -44,7 +44,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 	private int nrFloors = NRFLOORS;
 	private int liftspeed = LIFTSPEED;
 	private int callFrequency = GENCALLSFREQ;
-	private int buildingMaxWeight = BMAXWEIGHT;
+	private int buildingMaxCapacity = BMAXWEIGHT;
 	private int criteriaGroup = CRITERIAG;
 
 	private ContainerController mainContainer;
@@ -123,13 +123,13 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 		System.out.println("Running buildSchedule");
 
 		
-		
+		/*
 		class tryToStop extends BasicAction{
 			public void execute(){
 				if(getSchedule().getCurrentTime() == 1000)
 					stopSimulation();
 			}
-		}
+		}*/
 
 
 		class callLift extends BasicAction {
@@ -197,7 +197,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 
 	public String[] getInitParam(){
-		String[] initParams = { "NrLifts", "NrFloors", "Liftspeed", "CallFrequency", "BuildingMaxWeight", "CriteriaGroup"};
+		String[] initParams = { "NrLifts", "NrFloors", "Liftspeed", "CallFrequency", "BuildingMaxCapacity", "CriteriaGroup"};
 		return initParams;
 	}
 
@@ -240,7 +240,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 
 	private void launchAgents(){
 		for(int i = 0; i < nrLifts; i++){
-			LiftAgent a = new LiftAgent(buildingMaxWeight, nrFloors, criteriaGroup);
+			LiftAgent a = new LiftAgent(buildingMaxCapacity, nrFloors, criteriaGroup);
 			liftList.add(a);
 
 			try {
@@ -285,12 +285,12 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 		this.callFrequency = callFrequency;
 	}
 
-	public int getBuildingMaxWeight() {
-		return buildingMaxWeight;
+	public int getBuildingMaxCapacity() {
+		return buildingMaxCapacity;
 	}
 
-	public void setBuildingMaxWeight(int maxWeight) {
-		this.buildingMaxWeight = maxWeight;
+	public void setBuildingMaxCapacity(int maxWeight) {
+		this.buildingMaxCapacity = maxWeight;
 	}
 
 	public int getCriteriaGroup() {
