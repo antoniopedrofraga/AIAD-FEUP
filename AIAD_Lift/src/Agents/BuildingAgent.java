@@ -1,7 +1,9 @@
-package Agents;
+package agents;
 
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
+import utilities.Direction;
+import utilities.Statistics;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
@@ -9,10 +11,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import Launcher.BuildingSpace;
+import gui.BuildingSpace;
 import jade.core.AID;
-import Utilities.Direction;
-import Utilities.Statistics;
 
 
 public class BuildingAgent extends Agent{

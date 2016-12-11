@@ -1,4 +1,4 @@
-package Agents;
+package agents;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,17 +8,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
 
-
-import Launcher.BuildingSpace;
-import Utilities.Direction;
-import Utilities.Statistics;
-import Utilities.Task;
+import gui.BuildingSpace;
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
+import utilities.Direction;
+import utilities.Statistics;
+import utilities.Task;
 
 public class LiftAgent extends Agent implements Drawable{
 	private int y;

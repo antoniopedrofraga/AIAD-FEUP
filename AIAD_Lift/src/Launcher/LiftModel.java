@@ -1,11 +1,10 @@
-package Launcher;
+package launcher;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import Agents.BuildingAgent;
-import Agents.LiftAgent;
-import Utilities.Door;
-import Utilities.Statistics;
+import agents.BuildingAgent;
+import agents.LiftAgent;
+import gui.BuildingSpace;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -23,6 +22,8 @@ import uchicago.src.sim.engine.TickCounter;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.ColorMap;
 import uchicago.src.sim.gui.Value2DDisplay;
+import utilities.Door;
+import utilities.Statistics;
 import uchicago.src.sim.gui.Object2DDisplay;
 
 

@@ -1,10 +1,10 @@
-package Launcher;
+package gui;
 
 
-import Agents.BuildingAgent;
-import Agents.LiftAgent;
-import Utilities.Door;
+import agents.BuildingAgent;
+import agents.LiftAgent;
 import uchicago.src.sim.space.Object2DGrid;
+import utilities.Door;
 
 
 public class BuildingSpace {
