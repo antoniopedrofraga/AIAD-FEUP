@@ -1,5 +1,6 @@
 package Utilities;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -12,20 +13,34 @@ public class Statistics {
 	private static int nrLifts;
 	private static ArrayList<Integer> callsPerLift;
 	private static ArrayList<Double> timePerLift;
+	private static ArrayList<Double> noUseTimePerLift;
+	private static ArrayList<Double> useRatePerLift;
 	private static ArrayList<Double> waitTimePerLift;
+	private static ArrayList<Double> maxWaitTimePerLift;
+	private static ArrayList<Double> minWaitTimePerLift;
 
 	public Statistics(int nLifts){
 		nrLifts = nLifts;
 		callsPerLift = new ArrayList<Integer>(Collections.nCopies(nrLifts, 0));
 		timePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
 		waitTimePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
+		maxWaitTimePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
+		minWaitTimePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 1000));
+		noUseTimePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
+		useRatePerLift = new ArrayList<Double>(Collections.nCopies(nrLifts, (double) 0));
 	}
 
 	public static void calculateStatistics(){
 		long pTime = programEndTime - programStartTime; 
-
-		programTime  = (long) (pTime / 1000);
+		programTime  = (long) (pTime / 1000);		
 	}
+	
+	public static void calcNoUseTime(ArrayList<Double> useTime){
+		for(int i = 0; i < useTime.size(); i++){
+			noUseTimePerLift.set(i, (programTime - timePerLift.get(i)));
+		}
+	}
+	
 
 	public static void addCall(){
 		callsAnswered++;
@@ -36,9 +51,15 @@ public class Statistics {
 		callsPerLift.set(ID-1, previousCalls+1);
 	}
 
-	public static void addTimeToLift(int ID, double time){		
+	public static void addTimeToLift(int ID, double time){			
 		double timeSec = (double) (time / 1000000000);		
-		double previousTimes = timePerLift.get(ID-1);		
+		double previousTimes = timePerLift.get(ID-1);	
+		
+		if(timeSec > maxWaitTimePerLift.get(ID-1))
+			maxWaitTimePerLift.set(ID-1, timeSec);
+		
+		if(timeSec < minWaitTimePerLift.get(ID-1))
+			minWaitTimePerLift.set(ID-1, timeSec);
 
 		timePerLift.set(ID-1, (previousTimes + timeSec));
 
@@ -55,30 +76,52 @@ public class Statistics {
 		return calcArray;
 	}
 
-	public static double calcMediumWaitTime(ArrayList<Double> times){
-		double mediumWaitTime, time = 0;
-
-		for(int i = 0; i < times.size(); i++){
-			if(times.get(i) > 0)
-			time +=  times.get(i);
-		}
-		mediumWaitTime = time/times.size();
-
-		return mediumWaitTime;
-	}
 
 
 	public static void printStatistics(){
-		System.out.println("-----STATISTICS-----");
-		System.out.println("TOTAL TIME : " + programTime);
-		System.out.println("TOTAL CALLS ANSWERED: " + callsAnswered + "\n");
-		System.out.println("CALLS PER LIFT: " + callsPerLift);
-		System.out.println("TIME PER LIFT: " + timePerLift);
+		System.out.println("\n\n\n");
+		System.out.println("---------------------------------------- STATISTICS ----------------------------------------");
+		System.out.println("Total calls: " + callsAnswered);
+		System.out.println("Max waiting time: " + new DecimalFormat("#.##").format(Collections.max(maxWaitTimePerLift)));
+		System.out.println("Min waiting time: " + new DecimalFormat("#.##").format(Collections.min(minWaitTimePerLift)) + "\n");
+		
+		System.out.println("Calls per Lift:");
+		for(int i = 0; i < nrLifts; i++){
+			System.out.println("  Lift " + (i+1) + ": " + callsPerLift.get(i));
+		}
+		System.out.println("");
+		calcNoUseTime(timePerLift);
+		System.out.println("Use rate per Lift (use time / no use time):");	
+		for(int i = 0; i < nrLifts; i++){
+			double useRate = timePerLift.get(i)/noUseTimePerLift.get(i);
+			System.out.println("  Lift " + (i+1) + ": " + new DecimalFormat("#.##").format(useRate));
+		}
+		System.out.println("");
+		
+		System.out.println("Use time per Lift:");
+		for(int i = 0; i < nrLifts; i++){
+			System.out.println("  Lift " + (i+1) + ": " + new DecimalFormat("#.##").format(timePerLift.get(i)));
+		}
+		System.out.println("");
+		
+	
+		
+		System.out.println("No use time per Lift:");
+		for(int i = 0; i < nrLifts; i++){
+			System.out.println("  Lift " + (i+1) + ": " + new DecimalFormat("#.##").format(noUseTimePerLift.get(i)));
+		}
+		System.out.println("");
+		
 		waitTimePerLift = calcTimePerLift(callsPerLift, timePerLift);
-		double mediumWaitTime = calcMediumWaitTime(waitTimePerLift);
-		System.out.println("MEDIUM WAITING TIME PER LIFT: " + waitTimePerLift);
-		System.out.println("MEDIUM WAITING TIME OF BUILDING: " + mediumWaitTime + "\n");
-		System.out.println("------------------------");
+		
+		
+		System.out.println("Medium waiting time per Lift:");
+		for(int i = 0; i < nrLifts; i++){
+			System.out.println("  Lift " + (i+1) + ": " + new DecimalFormat("#.##").format(waitTimePerLift.get(i)));
+		}
+		System.out.println("");
+	
+		System.out.println("---------------------------------------------------------------------------------------------");
 	}
 
 	public static double getProgramEndTime() {
@@ -127,6 +170,38 @@ public class Statistics {
 
 	public static void setTimePerLift(ArrayList<Double> timePerLift) {
 		Statistics.timePerLift = timePerLift;
+	}
+
+	public static ArrayList<Double> getMaxWaitTimePerLift() {
+		return maxWaitTimePerLift;
+	}
+
+	public static void setMaxWaitTimePerLift(ArrayList<Double> maxWaitTimePerLift) {
+		Statistics.maxWaitTimePerLift = maxWaitTimePerLift;
+	}
+
+	public static ArrayList<Double> getMinWaitTimePerLift() {
+		return minWaitTimePerLift;
+	}
+
+	public static void setMinWaitTimePerLift(ArrayList<Double> minWaitTimePerLift) {
+		Statistics.minWaitTimePerLift = minWaitTimePerLift;
+	}
+
+	public static ArrayList<Double> getNoUseTimePerLift() {
+		return noUseTimePerLift;
+	}
+
+	public static void setNoUseTimePerLift(ArrayList<Double> noUseTimePerLift) {
+		Statistics.noUseTimePerLift = noUseTimePerLift;
+	}
+
+	public static ArrayList<Double> getUseRatePerLift() {
+		return useRatePerLift;
+	}
+
+	public static void setUseRatePerLift(ArrayList<Double> useRatePerLift) {
+		Statistics.useRatePerLift = useRatePerLift;
 	}
 
 }

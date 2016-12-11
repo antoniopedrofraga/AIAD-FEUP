@@ -121,9 +121,11 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 	private void buildSchedule() {
 		System.out.println("Running buildSchedule");
 
+		
+		
 		class tryToStop extends BasicAction{
 			public void execute(){
-				if(getSchedule().getCurrentTime() == 100000)
+				if(getSchedule().getCurrentTime() == 1000)
 					stopSimulation();
 			}
 		}
@@ -147,7 +149,7 @@ public class LiftModel extends Repast3Launcher implements TickCounter {
 		getSchedule().scheduleActionAtInterval(1, displaySurf, "updateDisplay", Schedule.LAST);
 		getSchedule().scheduleActionAtInterval(callFrequency, new callLift());
 		getSchedule().scheduleActionAtInterval(liftspeed, new doTask());
-		getSchedule().scheduleActionAtInterval(1, new tryToStop());
+		//getSchedule().scheduleActionAtInterval(1, new tryToStop());
 	}
 
 	private void buildModel() {

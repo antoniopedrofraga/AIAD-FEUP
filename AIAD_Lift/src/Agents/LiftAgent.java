@@ -8,12 +8,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
 
+
 import Launcher.BuildingSpace;
 import Utilities.Direction;
 import Utilities.Statistics;
 import Utilities.Task;
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
+import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
@@ -33,6 +35,8 @@ public class LiftAgent extends Agent implements Drawable{
 	private int algorithm;
 	private long callStartTime;
 	private long callEndTime;
+	AID buildingAID;
+
 
 	public LiftAgent(int bmaxWeight, int nrfloors, int algorithm){
 		this.algorithm = algorithm;
@@ -46,7 +50,8 @@ public class LiftAgent extends Agent implements Drawable{
 		this.LiftTasks = new ArrayList<Task>();
 		this.setCallStartTime(0);
 		this.setCallEndTime(0);
-		
+
+
 		//boolean onBoard = true;
 
 		try {
@@ -122,10 +127,10 @@ public class LiftAgent extends Agent implements Drawable{
 	}
 
 	public void goToDestiny(){
-		
+
 		int o = LiftTasks.get(0).getOriginFloor();
 		int d = LiftTasks.get(0).getDestFloor();
-		
+
 		if(d < getY() && onBoard){
 			//building.removeCallSpace(o);
 			goesUp();
@@ -140,10 +145,10 @@ public class LiftAgent extends Agent implements Drawable{
 			int o1 = (nrfloors-1) - o;
 			int d1 = (nrfloors-1) - d;
 			System.out.println("Lift " + ID +" went from " + o1 + " to " + d1+ "\n");
-			
+			TaskDone();
 			this.setCallEndTime(System.nanoTime());
-			
 			long time = this.callEndTime - this.callStartTime;
+			
 			Statistics.addTimeToLift(ID, time);
 			Statistics.addCallToLift(ID);
 		}
@@ -153,7 +158,7 @@ public class LiftAgent extends Agent implements Drawable{
 	public void callAnswered(int o){
 		building.removeCallSpace(o);
 	}
-	*/
+	 */
 
 	public void goesUp(){
 		y--;
@@ -166,13 +171,13 @@ public class LiftAgent extends Agent implements Drawable{
 		direction = Direction.DOWN;
 
 	}
-/*
+	/*
 	public void stopLift(){
 		direction = Direction.STOP;
 	}
 
 
-*/
+	 */
 	public void setLiftState(Direction dir){
 		this.direction = dir;
 	}
@@ -192,6 +197,15 @@ public class LiftAgent extends Agent implements Drawable{
 	public void setCallEndTime(long callEndTime) {
 		this.callEndTime = callEndTime;
 	}
+
+	public void TaskDone(){
+		ACLMessage done = new ACLMessage(ACLMessage.INFORM);
+		done.addReceiver(buildingAID);
+		done.setConversationId("taskdone");
+		done.setContent(getAID().getName() + " completed the task!");
+		send(done);
+	}
+
 
 	public class MsgListener extends CyclicBehaviour{
 		private static final long serialVersionUID = 1L;
@@ -221,8 +235,8 @@ public class LiftAgent extends Agent implements Drawable{
 					ACLMessage reply = message.createReply();
 					reply.setPerformative(ACLMessage.PROPOSE);
 					reply.setContent(cost);
-				
-					
+
+
 					//System.out.println("Sou o elevador " + getAID().getName() + " e o meu custo é de " + cost);
 					myAgent.send(reply);
 					step = 1;
@@ -236,16 +250,15 @@ public class LiftAgent extends Agent implements Drawable{
 				ACLMessage rsp = myAgent.receive();
 
 				if (rsp != null) {
-					
+					buildingAID = rsp.getSender();
 					if (rsp.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
 						String dFloor = rsp.getContent();
 						int destY = Integer.parseInt(dFloor);
 						//int destFloor = nrfloors - destY;
 						addLiftTasks(requestOriginFloor, destY);
-						
 						setCallStartTime(System.nanoTime());
-						
-						
+
+
 						//System.out.println("Elevador " + ID + " aceite!");
 					}
 					else{
@@ -285,14 +298,14 @@ public class LiftAgent extends Agent implements Drawable{
 							c = 1000 - LiftTasks.size() + maxWeight;
 						else if(requestOriginFloor > getLastTask().getDestFloor() && direction.equalsName("DOWN") || requestOriginFloor < getLastTask().getDestFloor() && direction.equalsName("UP")){ // em direcao ao piso de origem
 							if(direction.equalsName(requestDirection)){ // mesma direcao do pedido
-								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight;
+								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size();
 							}
 							else{
-								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight + 2;
+								c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - 2;
 							}
 						}
 						else{
-							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - maxWeight + 10;
+							c = 1000 - Math.abs(requestOriginFloor-getLastTask().getDestFloor()) - LiftTasks.size() - 10;
 						}
 
 					}
@@ -301,10 +314,10 @@ public class LiftAgent extends Agent implements Drawable{
 							c = 1000;
 						else if(requestOriginFloor > y && direction.equalsName("DOWN") || requestOriginFloor < y && direction.equalsName("UP")){ // em direcao ao piso de origem
 							if(direction.equalsName(requestDirection)){ // mesma direcao do pedido
-								c = 1000 - Math.abs(requestOriginFloor-y) + maxWeight;
+								c = 1000 - Math.abs(requestOriginFloor-y);
 							}
 							else{
-								c = 1000 - Math.abs(requestOriginFloor-y) + maxWeight + 2;
+								c = 1000 - Math.abs(requestOriginFloor-y)- 2;
 							}
 						}
 						else{
@@ -405,6 +418,7 @@ public class LiftAgent extends Agent implements Drawable{
 		}
 
 	}
+
 }
 
 

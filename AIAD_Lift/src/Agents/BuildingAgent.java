@@ -3,6 +3,7 @@ package Agents;
 import sajas.core.Agent;
 import sajas.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -27,15 +28,16 @@ public class BuildingAgent extends Agent{
 		this.buildingMaxWeight = 0;
 		this.algorithm = 1;
 	}
-	
+
+
 	public int getAlgorithm(){
 		return algorithm;
 	}
-	
+
 	public void setAlgorithm(int a){
 		this.algorithm = a;
 	}
-	
+
 	public void addAID(AID aid) {
 		AIDLifts.add(aid);
 	}
@@ -43,6 +45,7 @@ public class BuildingAgent extends Agent{
 	@Override
 	protected void setup(){
 		//System.out.println("Hello! Building Agent " + getAID().getName() +" is ready.");
+		addBehaviour(new ListenTo());		
 
 	}
 
@@ -84,16 +87,16 @@ public class BuildingAgent extends Agent{
 			addBehaviour(new RequestPerformer(originrandFloor, Direction.DOWN, destrandFloor, nrPeople));	
 			direction = "DOWN";
 		}
-	
+
 		int o = (nrFloors-1) - originrandFloor;
 		int d = (nrFloors-1) - destrandFloor;
 		building.callLiftSpace(originrandFloor, destrandFloor);
-		
+
 		if(algorithm == 3)
-		System.out.println("NEW CALL: Origin: "+ o + " Destination: " + d + "    -    " + nrPeople + " people.\n");
+			System.out.println("NEW CALL: Origin: "+ o + " Destination: " + d + "    -    " + nrPeople + " people.\n");
 		else
 			System.out.println("NEW CALL: Origin: "+ o + " Direction: " + direction + "    -    " + nrPeople + " people.\n");
-		
+
 	}
 
 
@@ -141,15 +144,15 @@ public class BuildingAgent extends Agent{
 				ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
 				for (AID aid : AIDLifts)
 					cfp.addReceiver(aid);
-				
+
 				if(algorithm == 3){
 					cfp.setContent(originFloor + "-" + destFloor + "/" + nrPeople);
 				}
 				else{
 					cfp.setContent(originFloor + "-" + direction + "/" + nrPeople);					
 				}
-				
-					send(cfp);
+
+				send(cfp);
 				step = 1;
 				break;
 			case 1:
@@ -203,6 +206,26 @@ public class BuildingAgent extends Agent{
 			return (step == 3);
 		}
 	}
+
+	private class ListenTo extends CyclicBehaviour {
+
+		private static final long serialVersionUID = 1L;
+		private MessageTemplate mt;
+
+
+		@Override
+		public void action() {
+			mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			ACLMessage reply = myAgent.receive(mt);
+
+			if(reply!=null){
+				System.out.println(reply.getContent());
+			}
+
+		}
+
+	}
+
 
 }
 
